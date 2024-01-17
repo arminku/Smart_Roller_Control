@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{b0a80946-31bd-4947-920a-869456b061cf}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	bEnableControlViaFieldbus 			AT%Q*:BOOL; 
+	bEnableSmartRoller_KISS				AT%Q*:BOOL; 
+	bChangeDirectionSmartRoller_KISS 	AT%Q*:BOOL; 
+	
+	bEnableSmartRoller_Velo				AT%Q*:BOOL;
+	bChangeDirectionSmartRoller_Velo	AT%Q*:BOOL;
+	nAnalogOutput						AT%Q*: INT;
+	nMinThreshold						:INT:=10000;
+	nMaxThreshold						:INT:=32767;
+	bRampPos							:BOOL;
+	bEnableAnalogBox_Up					AT%Q*:BOOL; 
+	bEnableAnalogBox_Us					AT%Q*:BOOL; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF bEnableSmartRoller_Velo THEN
+	nAnalogOutput:=LIMIT(nMinThreshold,SEL(bRampPos,nAnalogOutput-1,nAnalogOutput+1),nMaxThreshold);
+	IF nAnalogOutput>=nMaxThreshold THEN
+		bRampPos:=FALSE;
+	ELSIF nAnalogOutput<=nMinThreshold THEN
+		bRampPos:=TRUE;
+	END_IF
+ELSE 
+	nAnalogOutput:=0;
+END_IF
+bEnableControlViaFieldbus:=TRUE;
+bEnableAnalogBox_Up:=TRUE;
+bEnableAnalogBox_Us:=TRUE;]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
